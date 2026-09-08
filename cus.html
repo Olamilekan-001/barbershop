@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNow Pro - Barber & Salon Booking</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    :root{--gold:#c9a86a;--dark:#111}
+    .navbar-brand{font-weight:900;letter-spacing:2px}
+    .hero{background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1920') center/cover;min-height:70vh}
+    .service-card{border:2px solid transparent;cursor:pointer;transition:.2s}
+    .service-card.selected{border-color:var(--gold);background:#fff9ee}
+    .time-btn{border:1.5px solid #000;border-radius:30px;padding:6px 18px;margin:4px;background:#fff}
+    .time-btn.selected{background:#000;color:#fff}
+    .btn-gold{background:var(--gold);color:#fff;font-weight:700;border:none}.btn-gold:hover{background:#b8965a}
+    footer{background:var(--dark);color:#aaa}footer a{color:#aaa;text-decoration:none}
+  </style>
+</head>
+<body>
+
+<nav class="navbar bg-white shadow-sm sticky-top py-3">
+  <div class="container"><a class="navbar-brand" href="#">BookNow Pro <span style="color:var(--gold)">.</span></a>
+    <div class="d-flex gap-2"><a href="admin.html" class="btn btn-outline-dark btn-sm">Owner Login</a><button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#bookModal"><i class="bi bi-calendar"></i> Book Now</button></div>
+  </div>
+</nav>
+
+<section class="hero d-flex align-items-center text-white">
+  <div class="container"><div class="col-lg-6"><span class="badge bg-warning text-dark mb-3">Lagos • London • Dubai • Houston</span><h1 class="display-4 fw-bold">BOOK YOUR BARBER IN 30 SECONDS</h1><p class="lead my-3">No more waiting. Choose service, pick time, pay deposit. Get WhatsApp confirmation instantly.</p><button class="btn btn-gold btn-lg px-5 py-3" data-bs-toggle="modal" data-bs-target="#bookModal">Book Appointment Now</button><p class="mt-3 small"><i class="bi bi-people"></i> Trusted by 2,400+ shops worldwide</p></div></div>
+</section>
+
+<section class="py-5 bg-light"><div class="container"><div class="row text-center g-4">
+  <div class="col-md-4"><h3><i class="bi bi-clock"></i></h3><h6 class="fw-bold">24/7 Online Booking</h6><p class="small text-muted">Customers book even when you are sleeping</p></div>
+  <div class="col-md-4"><h3><i class="bi bi-whatsapp text-success"></i></h3><h6 class="fw-bold">WhatsApp Reminders</h6><p class="small text-muted">Auto reminder reduces no-shows by 70%</p></div>
+  <div class="col-md-4"><h3><i class="bi bi-credit-card"></i></h3><h6 class="fw-bold">Collect Deposit</h6><p class="small text-muted">Paystack / Stripe / PayPal integrated</p></div>
+</div></div></section>
+
+<!-- SERVICES -->
+<section class="py-5"><div class="container"><h3 class="fw-bold text-center mb-4">Our Services</h3><div class="row g-3" id="service-list"></div></div></section>
+
+<!-- BOOKING MODAL -->
+<div class="modal fade" id="bookModal"><div class="modal-dialog modal-lg"><div class="modal-content">
+  <div class="modal-header"><h5 class="fw-bold">Book Appointment</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body">
+    <div class="row g-4">
+      <div class="col-md-6"><label class="fw-bold">1. Choose Service</label><div id="modal-services" class="mt-2"></div></div>
+      <div class="col-md-6"><label class="fw-bold">2. Choose Date & Time</label><input id="book-date" type="date" class="form-control mt-2"><div id="time-slots" class="mt-3 d-flex flex-wrap"></div></div>
+    </div>
+    <hr><div class="row g-2"><div class="col-md-6"><input id="c-name" class="form-control" placeholder="Your Name"></div><div class="col-md-6"><input id="c-phone" class="form-control" placeholder="WhatsApp Number"></div></div>
+  </div>
+  <div class="modal-footer justify-content-between"><h5 id="total-price">Total: $0</h5><button class="btn btn-gold px-4" onclick="confirmBooking()">Confirm & Pay Deposit</button></div>
+</div></div></div>
+
+<footer class="pt-5 pb-3 mt-5"><div class="container"><div class="row"><div class="col-md-6"><h5 class="text-white fw-bold">BookNow Pro</h5><p>Sell this website to barbers for $20/month. Built by you in Lagos, sold worldwide.</p></div><div class="col-md-3"><h6 class="text-white">TARGET COUNTRIES</h6><p>USA $29/mo<br>UK $25/mo<br>UAE $35/mo<br>Nigeria ₦10k/mo</p></div><div class="col-md-3"><h6 class="text-white">CONTACT</h6><p>Your WhatsApp: +234...<br>Email: you@gmail.com</p></div></div><hr style="border-color:#333"><p class="text-center small">© 2026 BookNow Pro - Build once, sell everywhere</p></div></footer>
+
+<script>
+const services=[
+{name:"Men's Haircut",price:15,time:"30min",icon:"✂️"},
+{name:"Beard Trim",price:10,cat:"wear",time:"20min",icon:"🧔"},
+{name:"Haircut + Beard",price:22,time:"45min",icon:"💈"},
+{name:"Dreadlocks Retwist",price:30,time:"60min",icon:"🪮"},
+{name:"Manicure + Pedicure",price:18,time:"40min",icon:"💅"},
+{name:"Full Grooming Package",price:45,time:"90min",icon:"👑"}
+];
+let selectedService=null,selectedTime=null;
+document.getElementById('service-list').innerHTML=services.map((s,i)=>`<div class="col-6 col-md-4"><div class="card service-card p-3 h-100" onclick="selectService(${i})"><h4>${s.icon}</h4><h6 class="fw-bold">${s.name}</h6><small>${s.time} • $${s.price}</small></div></div>`).join('');
+document.getElementById('modal-services').innerHTML=services.map((s,i)=>`<div class="card service-card p-2 mb-2" onclick="selectService(${i})" id="s-${i}"><div class="d-flex justify-content-between"><span>${s.icon} ${s.name}</span><b>$${s.price}</b></div></div>`).join('');
+const times=["09:00 AM","10:00 AM","11:00 AM","12:00 PM","01:00 PM","02:00 PM","03:00 PM","04:00 PM","05:00 PM","06:00 PM"];
+document.getElementById('time-slots').innerHTML=times.map(t=>`<button class="time-btn" onclick="selectTime(this,'${t}')">${t}</button>`).join('');
+function selectService(i){selectedService=services[i];document.querySelectorAll('.service-card').forEach(c=>c.classList.remove('selected'));document.getElementById('s-'+i)?.classList.add('selected');document.getElementById('total-price').innerText='Total: $'+selectedService.price;}
+function selectTime(btn,t){selectedTime=t;document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
+function confirmBooking(){
+  let name=document.getElementById('c-name').value,phone=document.getElementById('c-phone').value,date=document.getElementById('book-date').value;
+  if(!selectedService||!selectedTime||!name||!phone||!date) return alert('Fill all fields');
+  let bookings=JSON.parse(localStorage.getItem('bookings')||'[]');bookings.push({service:selectedService.name,price:selectedService.price,time:selectedTime,date,name,phone});
+  localStorage.setItem('bookings',JSON.stringify(bookings));
+  let msg=encodeURIComponent(`New Booking!\nService: ${selectedService.name}\nDate: ${date} ${selectedTime}\nName: ${name}\nPhone: ${phone}\nPrice: $${selectedService.price}`);
+  window.open(`https://wa.me/2348000000000?text=${msg}`,'_blank');alert('Booking saved! Check admin.html');
+}
+document.getElementById('book-date').valueAsDate=new Date();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
